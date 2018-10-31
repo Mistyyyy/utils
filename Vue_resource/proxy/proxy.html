@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1>this is a proxy</h1>
+        <div>
+            <span>name：</span>
+            <span class="name"></span>
+        </div>
+        <div>
+            <span>age：</span>
+            <span class="age"></span>
+        </div>
+        <button class="bth" style="margin-top: 100px">toggle</button>
+    </div>
+    <script>
+        /**
+            proxy代理 指的是在访问目标对象之前对其操作进行拦截
+            // get会在对代理对象进行
+        */
+
+        function getElement (selector) {
+            return document.querySelector(`.${selector}`)
+        }
+
+        function setText (dom, text) {
+            dom.innerHTML = text
+        }
+
+        function render(obj) {
+            let nameEle = getElement('name'),
+                ageEle = getElement('age');
+            setText(nameEle, obj.name)
+            setText(ageEle, obj.age)
+        }
+
+        function $watch(fn, cb) {
+            // 第一个参数的执行会访问属性 形成依赖
+            target = cb
+            fn()
+        }
+
+        let noop = () => {}
+
+        let obj = {
+            name: 'harley',
+            age: 19
+        }
+        function walk(obj) {
+            for (let key in obj) {
+                let dep = []
+                let val = obj[key]
+                Object.defineProperty(obj, key, {
+                    get () {
+                        dep.push(target || noop)
+                        console.log(`访问了属性${key}`)
+                        return val
+                    },
+                    set (value) {
+                        if (value === val) {
+                            return
+                        }
+                        val = value
+                        console.log(`设置了属性${key}`)
+                        dep.forEach(fn => fn())
+                    }
+                })
+            }
+        } 
+
+        walk(obj)
+
+        $watch(render.bind(null, obj), render.bind(null, obj))
+        
+        getElement('bth').addEventListener('click', function handle() {
+            obj.name = 'jack'
+            obj.age = 190
+        })
+    </script>
+</body>
+</html>

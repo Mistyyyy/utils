@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+            .container{
+                margin:0 auto;
+                width: 100%;
+                overflow: hidden;
+            }
+            .left{
+                height: 50px;
+                width: 33.33%;
+                margin-bottom: -500px;
+                padding-bottom: 500px;
+                float: left;
+                background-color: rgba(33, 114, 214, 0.8);
+            }
+            .main{
+                height:100px;
+                margin-bottom: -500px;
+                width: 33.33%;
+                float: left;
+                padding-bottom: 500px;
+                background-color: rgba(255, 82, 0, 0.8);
+            }
+            .right{
+                width: 33.33%;
+                float: left;
+                margin-bottom: -500px;
+                padding-bottom: 500px;
+                background-color: rgba(90, 243, 151, 0.8)
+            }
+        </style>
+<body>
+        <div class="container">
+            <div class="left"> height:50px</div>
+            <div class="main">height:100px</div>
+            <div class="right">height:30px</div>
+        </div>
+        
+    <script>
+        const find = container => target => container.get(target)
+        const csv = content => `${content.ssn}, ${content.firstName}, ${content.lastName}`
+        const queryEl = dom => document.querySelector(dom)
+        const insertContent = dom => content => queryEl(dom).innerHTML = content
+        const reserver = arr => arr.reverse()
+        const run = (...fn)  => reserver(fn).reduce((acc, cur) => (...args) => cur(acc(...args)))
+
+
+
+        const showStudent = run(insertContent('#student-info'), csv, find(db))
+        showStudent('4444-aaaa-cccc')
+    </script>
+</body>
+</html>

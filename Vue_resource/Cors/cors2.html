@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div> this is a child window</div>
+    <button> post to parent</button>
+    <script>
+        window.onhashchange = function () {
+            let message = window.location.hash
+            console.log(JSON.stringify(message))
+        }
+        document.querySelector('button').addEventListener('click', () => {
+            let hash = 'bbbbbbbbb'
+            parent.location.href= "cors1.html" + "#" + hash;
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const data = {
+            name: '霍春阳',
+            age: 24
+        }
+
+        function render () {
+            return document.write(`姓名：${data.name}; 年龄：${data.age}`)
+        }
+
+        // 给传入的参数添加响应式的行为
+        // 1 有一个收集的过程 就是当触发的对象的get时，就要有收集 因为当值改变时，可以通知收集的依赖项
+        function walk(data) {
+            for(let key in data) {
+                // dep val 是一个闭包 存储当前key值的依赖 因为let， const会自动生成块状的作用域
+                const dep = []
+                let val = data[key]
+                if (typeof val === 'object') {
+                    walk(val)
+                }
+                Object.defineProperty(data, key, {
+                get () {
+                    dep.push(target)
+                    return val
+                },
+                set (newVal) {
+                    if (newVal === val) return
+                    val = newVal
+                    dep.forEach(fn => fn())
+                }
+                })
+            }
+        }
+        walk(data)
+        let target = null
+        function $watch(key, fn) {
+            target = fn
+            let arr = []
+            let obj = data
+            if (typeof key === 'function') {
+                key()
+                return
+            }
+            if (/\./.test(key)) {
+                arr = key.split('.')
+                arr.forEach(v => {
+                    obj = obj[v]
+                })
+                return
+            }
+            data[key]            
+        }
+        $watch(render, render)
+        data.name = '2222'
+        console.log(data)
+    </script>
+</body>
+</html>

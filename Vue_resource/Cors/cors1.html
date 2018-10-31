@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <span>this is a parent window</span> 
+        <button id="btn">post to child</button>
+        <iframe src="cors2.html" frameborder="0" id="iframe"></iframe>
+    </div>
+    <script>
+        let btn = document.getElementById('btn')
+        let iframe = document.getElementById('iframe')
+        btn.addEventListener('click',() => {
+            let data = 'aaaaaaaaa'
+            iframe.src = "cors2.html"+ "#" + "data=" + data
+        })
+        window.onhashchange = function () {
+            console.log(event.newURL)
+        }
+    </script>
+</body>
+</html>
