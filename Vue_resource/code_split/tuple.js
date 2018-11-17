@@ -6,7 +6,7 @@ const Tuple = function() {
         if (thisArgs.length !== args.length) {
             throw new Error('The arguments must have the same length with Tuples arguments length')
         }
-        if (thisArgs.some((v) => v === null || v === undefined)) {
+        if (thisArgs.some(v => v === null || v === undefined)) {
             throw new Error('The arguments must have valid value')
         }
         if (thisArgs.some((item, index) => item.constructor !== args[index])) {
@@ -24,5 +24,6 @@ const Tuple = function() {
 
 const Tnum = Tuple(Number, String)
 const v = new Tnum(123, 'ssss')
+const vm = new Tnum(333, 'null')
 let [num, str] = v.values()
 console.log(num, str)
