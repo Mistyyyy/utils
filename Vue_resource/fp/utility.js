@@ -116,11 +116,73 @@ const partialRight = (fn, ...arg) => (...someArg) => partial(...someArg.reverse(
 /** 
  * curry and looseCurry and unCurry
 */
+// 注：因为curry的原理主要是判断要被curry化函数的参数个数，如果参数有默认值的化会导致执行有问题，所以通常提供第二个参数，进行指定要执行的参数
 
+const curry = (fn, ary = fn.length) => arg => {
+  
+}
+
+const looseCurry = (fn, ary = fn.length) => (...arg) => {
+
+}
+
+const unCurry = fn => (...arg) => {
+  let ret
+  for (let i of arg) {
+    ret = fn(i)
+    fn = ret
+  }
+  return ret 
+}
 
 /** 
- * free-point
+ * free-point compose pipe
+ * 结合 compose组合 partial curry 可以写出point free的代码
+ * 要点：注意将分散的逻辑抽出来，进行解耦。再对这些分散的步骤进行组合，再利用偏函数或curry化进行应用。
 */
+
+const reverseArg = fn => (...arg) => fn(...arg.reverse())
+
+const compose = (...fn) => fn.reverse().reduce((acc, cur) => {
+  return (...arg) => cur(acc(...arg))
+})
+
+const pipe = reverseArg(compose)
+
+// example
+
+// given: ajax( url, data, cb )
+
+var getPerson = partial( ajax, "http://some.api/person" );
+var getLastOrder = partial( ajax, "http://some.api/order", { id: -1 } );
+
+getLastOrder( function orderFound(order){
+    getPerson( { id: order.personId }, function personFound(person){
+        output( person.name );
+    } );
+} );
+
+const prop = (key, obj) => obj[key]
+const setProps = (key, obj, value) => {
+  return {
+    ...obj,
+    [key]: value
+  }
+}
+const exactName = partial(prop,'name')
+const personFind = compose(output, exactName)
+const getId = partial(prop,'personId')
+const proceed = partialRight(getPerson, personFind) 
+
+getLastOrder(function orderFound(order) {
+  proceed({ id: order.personId})
+})
+
+const getOrder = compose(proceed, partial(setProps, 'id', {}) ,getId)
+
+
+
+getLastOrder(getOrder)
 
 
 
