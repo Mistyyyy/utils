@@ -117,20 +117,44 @@ const partialRight = (fn, ...arg) => (...someArg) => partial(...someArg.reverse(
  * curry and looseCurry and unCurry
 */
 // 注：因为curry的原理主要是判断要被curry化函数的参数个数，如果参数有默认值的化会导致执行有问题，所以通常提供第二个参数，进行指定要执行的参数
-
-const curry = (fn, ary = fn.length) => arg => {
-  
+const curry = (fn, arity = fn.length) => {
+  const saveArr = []
+  const EachArgs = (args, len = arity) => {
+      saveArr.concat(args)
+      if (saveArr.length < len) {
+          return function(nextArg) {
+              return EachArgs(nextArg)
+          }
+      } else {
+          return fn(...saveArr)
+      }
+  }
+  return function() {
+      return EachArgs(arg)
+  }
 }
 
-const looseCurry = (fn, ary = fn.length) => (...arg) => {
-
+const looseCurry = (fn, arity = fn.length) => {
+  const saveArr = []
+  const EachArgs = (...args, len) => {
+      saveArr.concat(args)
+      if (args.length < len) {
+          return function(...nextArg) {
+              return EachArgs(...nextArg, len - args.length)
+          }
+      } else {
+          return fn(...saveArr)
+      }
+  }
+  return function(...args) {
+      return EachArgs(...args, arity)
+  }
 }
 
 const unCurry = fn => (...arg) => {
-  let ret
+  let ret = fn
   for (let i of arg) {
-    ret = fn(i)
-    fn = ret
+    ret = ret(i)
   }
   return ret 
 }
