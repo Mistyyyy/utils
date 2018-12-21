@@ -4,6 +4,12 @@
 
 const noop = () => void 0
 
+/* 
+* not 
+*/
+
+const not = fn => (...arg) => !fn(...arg)
+
 /** 
  * 将函数转换为一元函数
  * 应用场景： 当一些数组和其他的一些高阶函数接受多个值的时候，可以利用此转换为
@@ -208,8 +214,77 @@ const getOrder = compose(proceed, partial(setProps, 'id', {}) ,getId)
 
 getLastOrder(getOrder)
 
+// 数据的去重
 
+const unique = arr => arr.filter((v, idx) => arr.indexOf(v) === idx)
 
+// const unique = arr => arr.reduce((acc, cur) => return acc.includes(cur) ? acc : [...acc, cur], [])
+
+unique( [1,4,7,1,3,1,7,9,2,6,4,0,5,3] );
+// [1, 4, 7, 3, 9, 2, 6, 0, 5]
+
+// 数组的flatten
+
+// const flatten = arr => arr.reduce((acc, cur) => acc.concat(cur), [])
+
+// const deepFlatten = arr => arr.reduce((acc, cur) => acc.concat(Array.isArray(cur) ? deepFlatten(cur) : cur), [])
+
+const flatten = (arr, depth = Infinity) => {
+  return arr.reduce((acc, cur) => {
+    return acc.concat(
+      depth > 0
+        ? Array.isArray(cur) && depth > 1
+          ? flattenDepth(cur, --depth)
+          : cur
+        : [cur]
+    )
+  }, [])
+}
+
+flatten( [[0,1],2,3,[4,[5,6,7],[8,[9,[10,[11,12],13]]]]], 0 );
+// [[0,1],2,3,[4,[5,6,7],[8,[9,[10,[11,12],13]]]]]
+
+flatten( [[0,1],2,3,[4,[5,6,7],[8,[9,[10,[11,12],13]]]]], 1 );
+// [0,1,2,3,4,[5,6,7],[8,[9,[10,[11,12],13]]]]
+
+const flatMap = (mapFn, arr) => flatten(arr.map(mapFn), 1)
+
+//note:  this approach still processes the list twice resulting in worse performance
+
+const flatMap = (mapFn, arr) => arr.reduce((acc, cur) => {
+  return acc.concat(mapFn(cur))
+}, [])
+
+const firstNames = [
+  { name: "Jonathan", variations: [ "John", "Jon", "Jonny" ] },
+  { name: "Stephanie", variations: [ "Steph", "Stephy" ] },
+  { name: "Frederick", variations: [ "Fred", "Freddy" ] }
+]
+
+flatMap(every => [...every.variations, every.name], firstNames)
+
+// ["Jonathan","John","Jon","Jonny","Stephanie","Steph","Stephy",
+//  "Frederick","Fred","Freddy"]
+
+const zip = (arr1, arr2) => arr1.reduce((acc, cur, idx) => [...acc,[cur, arr2[idx]]],[])
+
+zip( [1,3,5,7,9], [2,4,6,8,10] );
+// [ [1,2], [3,4], [5,6], [7,8], [9,10] ]
+
+const mergeList = (arr1, arr2) => {
+  const merges = []
+  const arr1 = [...arr1]
+  const arr2 = [...arr2]
+  while(arr1.length > 0 || arr2.length > 0) {
+    if (arr1.length) {
+      merges.push(arr1.shift())
+    }
+    if (arr2.length) {
+      merges.push(arr2.shift())
+    }
+  }
+  return merges
+}
 
 
 
