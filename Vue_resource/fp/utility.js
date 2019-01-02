@@ -251,9 +251,13 @@ const flatMap = (mapFn, arr) => flatten(arr.map(mapFn), 1)
 
 //note:  this approach still processes the list twice resulting in worse performance
 
-const flatMap = (mapFn, arr) => arr.reduce((acc, cur) => {
-  return acc.concat(mapFn(cur))
-}, [])
+const flatMap = 
+  (mapFn, arr) => 
+    arr
+      .reduce((acc, cur) => 
+        acc
+          .concat(mapFn(cur))
+        ,[])
 
 const firstNames = [
   { name: "Jonathan", variations: [ "John", "Jon", "Jonny" ] },
@@ -285,6 +289,15 @@ const mergeList = (arr1, arr2) => {
   }
   return merges
 }
+
+//相当于 flttern(zip(arr1, arr2))
+
+const mergeReducer = 
+  (mergeList, item, idx) => (mergelist.splice(idx*2, 0, item), mergeList)
+
+[1,3,5,7,9]
+.reduce( mergeReducer, [2,4,6,8,10] )
+  // [1,2,3,4,5,6,7,8,9,10]
 
 
 
